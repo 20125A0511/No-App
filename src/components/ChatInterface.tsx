@@ -22,6 +22,7 @@ export default function ChatInterface() {
   ]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [visitorCount, setVisitorCount] = useState<number>(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -32,6 +33,36 @@ export default function ChatInterface() {
   useEffect(() => {
     // Focus the input field when the component mounts
     inputRef.current?.focus();
+  }, []);
+
+  // Handle visitor count tracking
+  useEffect(() => {
+    const incrementVisitorCount = async () => {
+      try {
+        // Initialize from localStorage if it exists
+        const storedCount = localStorage.getItem('visitorCount');
+        let count = storedCount ? parseInt(storedCount, 10) : 0;
+
+        // Check if this is a new visitor
+        const isNewVisitor = !localStorage.getItem('isVisitor');
+        if (isNewVisitor) {
+          // Mark as a visitor
+          localStorage.setItem('isVisitor', 'true');
+          // Increment count
+          count += 1;
+          localStorage.setItem('visitorCount', count.toString());
+        }
+
+        // Set the count in state
+        setVisitorCount(count);
+      } catch (error) {
+        console.error('Error tracking visitor count:', error);
+        // Fallback if localStorage fails
+        setVisitorCount(1);
+      }
+    };
+
+    incrementVisitorCount();
   }, []);
 
   const formatTime = (date: Date) => {
@@ -82,8 +113,9 @@ export default function ChatInterface() {
 
   return (
     <div className="flex flex-col h-screen max-w-md mx-auto bg-black">
-      <div className="bg-gray-800 text-white p-3 text-center font-semibold">
-        I will say NO
+      <div className="bg-gray-800 text-white p-3 text-center">
+        <h1 className="font-semibold">I will say NO</h1>
+        <p className="text-xs mt-1 text-gray-400">Visitor #{visitorCount}</p>
       </div>
       
       <div className="flex-1 p-3 overflow-y-auto bg-black">
