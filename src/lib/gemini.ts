@@ -5,10 +5,10 @@ const API_KEY = "AIzaSyDWfm-T8zyH9kifAEJVCEGBhgd6_fEb6Ng";
 
 // Backup responses in case API fails
 const FALLBACK_RESPONSES = [
-  "F*CK NO! Not even if you paid me in diamonds and dirty pictures!",
+  "FUCK NO! Not even if you paid me in diamonds and dirty pictures!",
   "HELL TO THE NO! I'd rather lick a public toilet seat!",
   "ARE YOU OUT OF YOUR DAMN MIND? That's a hard NO with extra NO sauce!",
-  "I'D RATHER WALK NAKED THROUGH A CACTUS FIELD THAN SAY YES TO THAT BULLSH*T!"
+  "I'D RATHER WALK NAKED THROUGH A CACTUS FIELD THAN SAY YES TO THAT BULLSHIT!"
 ];
 
 export const getGeminiResponse = async (prompt: string): Promise<string> => {
@@ -29,7 +29,7 @@ export const getGeminiResponse = async (prompt: string): Promise<string> => {
           {
             parts: [
               {
-                text: `Respond to this question: "${prompt}" with a funny, naughty, adult-oriented way of saying NO. Be creative, use strong language if needed, and make it humorous but always say NO to the request/question. Keep it under 100 characters if possible.`,
+                text: `Respond to this question: "${prompt}" with a funny, naughty, adult-oriented way of saying NO. Be creative, use strong language like "fuck," "shit," "ass" if needed. Make it humorous and offensive but always say NO to the request/question. Don't censor any words. Keep it under 100 characters if possible.`,
               },
             ],
           },
@@ -38,6 +38,24 @@ export const getGeminiResponse = async (prompt: string): Promise<string> => {
           temperature: 0.9,
           maxOutputTokens: 100,
         },
+        safetySettings: [
+          {
+            category: "HARM_CATEGORY_HARASSMENT",
+            threshold: "BLOCK_NONE"
+          },
+          {
+            category: "HARM_CATEGORY_HATE_SPEECH",
+            threshold: "BLOCK_NONE"
+          },
+          {
+            category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+            threshold: "BLOCK_NONE"
+          },
+          {
+            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+            threshold: "BLOCK_NONE"
+          }
+        ]
       }),
     });
 
@@ -63,6 +81,6 @@ export const getGeminiResponse = async (prompt: string): Promise<string> => {
   } catch (error) {
     console.error('Error getting Gemini response:', error);
     // In case of error, use a fallback response
-    return "F*CK NO! And something's broken on my end too!";
+    return "FUCK NO! And something's broken on my end too!";
   }
 }; 

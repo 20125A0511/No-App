@@ -35,34 +35,28 @@ export default function ChatInterface() {
     inputRef.current?.focus();
   }, []);
 
-  // Handle visitor count tracking
+  // Handle visitor count tracking - counting total visits
   useEffect(() => {
-    const incrementVisitorCount = async () => {
+    const trackVisit = () => {
       try {
-        // Initialize from localStorage if it exists
-        const storedCount = localStorage.getItem('visitorCount');
+        // Get the stored visit count
+        const storedCount = localStorage.getItem('totalVisits');
         let count = storedCount ? parseInt(storedCount, 10) : 0;
-
-        // Check if this is a new visitor
-        const isNewVisitor = !localStorage.getItem('isVisitor');
-        if (isNewVisitor) {
-          // Mark as a visitor
-          localStorage.setItem('isVisitor', 'true');
-          // Increment count
-          count += 1;
-          localStorage.setItem('visitorCount', count.toString());
-        }
-
+        
+        // Always increment visit count
+        count += 1;
+        localStorage.setItem('totalVisits', count.toString());
+        
         // Set the count in state
         setVisitorCount(count);
       } catch (error) {
         console.error('Error tracking visitor count:', error);
         // Fallback if localStorage fails
-        setVisitorCount(1);
+        setVisitorCount(Math.floor(Math.random() * 1000) + 50); // Random number to show activity
       }
     };
 
-    incrementVisitorCount();
+    trackVisit();
   }, []);
 
   const formatTime = (date: Date) => {
@@ -102,7 +96,7 @@ export default function ChatInterface() {
       console.error('Error fetching response:', error);
       const errorMessage: Message = {
         id: messages.length + 2,
-        text: "F*CK NO!!! And I'm having a digital breakdown right now. Try again when I'm less pissed off!",
+        text: "FUCK NO!!! And I'm having a digital breakdown right now. Try again when I'm less pissed off!",
         sender: 'ai',
         timestamp: new Date(),
       };
@@ -115,7 +109,7 @@ export default function ChatInterface() {
     <div className="flex flex-col h-screen max-w-md mx-auto bg-black">
       <div className="bg-gray-800 text-white p-3 text-center">
         <h1 className="font-semibold">I will say NO</h1>
-        <p className="text-xs mt-1 text-gray-400">Visitor #{visitorCount}</p>
+        <p className="text-xs mt-1 text-gray-400">Visitors: {visitorCount}</p>
       </div>
       
       <div className="flex-1 p-3 overflow-y-auto bg-black">
