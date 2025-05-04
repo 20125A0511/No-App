@@ -57,7 +57,7 @@ For Vercel deployment, make sure to add this environment variable in your Vercel
 
 ## Deployment
 
-The app is deployed on Vercel at [https://justnoapp-mdkyru5ar-charans-projects-1128382a.vercel.app](https://justnoapp-mdkyru5ar-charans-projects-1128382a.vercel.app)
+The app is deployed on Vercel at [https://justnoapp.vercel.app](https://justnoapp.vercel.app)
 
 ## License
 
