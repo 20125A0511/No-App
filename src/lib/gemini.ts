@@ -1,7 +1,8 @@
 // This file would typically contain actual Gemini API integration
 // For now, we're just simulating responses
 
-const API_KEY = "AIzaSyDWfm-T8zyH9kifAEJVCEGBhgd6_fEb6Ng";
+// Use environment variable for API key
+const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
 
 // Backup responses in case API fails
 const FALLBACK_RESPONSES = [
@@ -14,6 +15,12 @@ const FALLBACK_RESPONSES = [
 export const getGeminiResponse = async (prompt: string): Promise<string> => {
   try {
     console.log("Calling Gemini API for:", prompt);
+    
+    // Check if API key is available
+    if (!API_KEY) {
+      console.error('No Gemini API key found in environment variables');
+      return FALLBACK_RESPONSES[Math.floor(Math.random() * FALLBACK_RESPONSES.length)];
+    }
     
     // Using the correct working endpoint
     const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent";

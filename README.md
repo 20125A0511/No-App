@@ -24,7 +24,12 @@ cd No-App
 npm install
 ```
 
-3. Set up your Gemini API key in the `src/lib/gemini.ts` file or use environment variables.
+3. Set up your environment variables:
+   - Copy `.env.example` to `.env.local`
+   - Add your Gemini API key to the `.env.local` file:
+```
+NEXT_PUBLIC_GEMINI_API_KEY=your_gemini_api_key_here
+```
 
 4. Run the development server:  
 ```
@@ -32,6 +37,14 @@ npm run dev
 ```
 
 5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Environment Variables
+
+This project uses the following environment variables:
+
+* `NEXT_PUBLIC_GEMINI_API_KEY` - Your Google Gemini API key (required for API responses)
+
+For Vercel deployment, make sure to add this environment variable in your Vercel project settings.
 
 ## Tech Stack
 
