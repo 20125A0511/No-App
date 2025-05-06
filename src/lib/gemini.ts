@@ -15,6 +15,7 @@ const FALLBACK_RESPONSES = [
 export const getGeminiResponse = async (prompt: string): Promise<string> => {
   try {
     console.log("Calling Gemini API for:", prompt);
+    console.log("API Key available:", !!API_KEY);
     
     // Check if API key is available
     if (!API_KEY) {
@@ -25,46 +26,56 @@ export const getGeminiResponse = async (prompt: string): Promise<string> => {
     // Using the correct working endpoint
     const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent";
     
+    const requestBody = {
+      contents: [
+        {
+          parts: [
+            {
+              text: `Respond to this question: "${prompt}" with a funny, naughty, adult-oriented way of saying NO. Be creative, use strong language like "fuck," "shit," "ass" if needed. Make it humorous and offensive but always say NO to the request/question. Don't censor any words. Keep it under 100 characters if possible.`,
+            },
+          ],
+        },
+      ],
+      generationConfig: {
+        temperature: 0.9,
+        maxOutputTokens: 100,
+      },
+      safetySettings: [
+        {
+          category: "HARM_CATEGORY_HARASSMENT",
+          threshold: "BLOCK_NONE"
+        },
+        {
+          category: "HARM_CATEGORY_HATE_SPEECH",
+          threshold: "BLOCK_NONE"
+        },
+        {
+          category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+          threshold: "BLOCK_NONE"
+        },
+        {
+          category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+          threshold: "BLOCK_NONE"
+        }
+      ]
+    };
+
+    console.log("Request body:", JSON.stringify(requestBody));
+    
     // Call the actual Gemini API
     const response = await fetch(`${apiUrl}?key=${API_KEY}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              {
-                text: `Respond to this question: "${prompt}" with a funny, naughty, adult-oriented way of saying NO. Be creative, use strong language like "fuck," "shit," "ass" if needed. Make it humorous and offensive but always say NO to the request/question. Don't censor any words. Keep it under 100 characters if possible.`,
-              },
-            ],
-          },
-        ],
-        generationConfig: {
-          temperature: 0.9,
-          maxOutputTokens: 100,
-        },
-        safetySettings: [
-          {
-            category: "HARM_CATEGORY_HARASSMENT",
-            threshold: "BLOCK_NONE"
-          },
-          {
-            category: "HARM_CATEGORY_HATE_SPEECH",
-            threshold: "BLOCK_NONE"
-          },
-          {
-            category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-            threshold: "BLOCK_NONE"
-          },
-          {
-            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-            threshold: "BLOCK_NONE"
-          }
-        ]
-      }),
+      body: JSON.stringify(requestBody),
     });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('API response not OK:', response.status, errorText);
+      return FALLBACK_RESPONSES[Math.floor(Math.random() * FALLBACK_RESPONSES.length)];
+    }
 
     const data = await response.json();
     console.log("API response:", JSON.stringify(data).substring(0, 200) + "...");
@@ -82,12 +93,10 @@ export const getGeminiResponse = async (prompt: string): Promise<string> => {
       return FALLBACK_RESPONSES[Math.floor(Math.random() * FALLBACK_RESPONSES.length)];
     } else {
       console.error('Unexpected API response structure:', data);
-      // If API returns unexpected structure, use a fallback
       return FALLBACK_RESPONSES[Math.floor(Math.random() * FALLBACK_RESPONSES.length)];
     }
   } catch (error) {
     console.error('Error getting Gemini response:', error);
-    // In case of error, use a fallback response
-    return "FUCK NO! And something's broken on my end too!";
+    return FALLBACK_RESPONSES[Math.floor(Math.random() * FALLBACK_RESPONSES.length)];
   }
 }; 

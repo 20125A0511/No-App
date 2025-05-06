@@ -38,17 +38,30 @@ export default function VoiceMessage({ text, onPlayComplete }: VoiceMessageProps
       if ('speechSynthesis' in window) {
         speech = new SpeechSynthesisUtterance(text);
         
-        // Configure voice settings for a tiny, sassy voice
-        speech.pitch = 1.5; // Higher pitch
-        speech.rate = 1.1;  // Slightly faster
-        speech.volume = 0.8;
+        // Configure voice settings for a more natural, human-like voice
+        speech.pitch = 1.1;  // Slightly higher than normal pitch
+        speech.rate = 0.9;   // Slightly slower than normal rate
+        speech.volume = 0.9; // Slightly lower volume for more natural sound
 
         // Try to set a female voice if available
         const voices = window.speechSynthesis.getVoices();
-        const femaleVoice = voices.find(voice => voice.name.includes('Female') || voice.name.includes('female'));
+        const femaleVoice = voices.find(voice => 
+          voice.name.includes('Female') || 
+          voice.name.includes('female') ||
+          voice.name.includes('Samantha') || // Common female voice name
+          voice.name.includes('Karen')      // Common female voice name
+        );
         if (femaleVoice) {
           speech.voice = femaleVoice;
         }
+
+        // Add slight pauses for more natural speech
+        const textWithPauses = text
+          .replace(/!/g, '!...')
+          .replace(/\?/g, '?...')
+          .replace(/\./g, '....');
+
+        speech.text = textWithPauses;
 
         speech.onstart = () => setIsPlaying(true);
         speech.onend = () => {
