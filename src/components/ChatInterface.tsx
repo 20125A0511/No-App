@@ -3,14 +3,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 import { getGeminiResponse } from '@/lib/gemini';
-import VoiceMessage from './VoiceMessage';
 
 interface Message {
   id: number;
   text: string;
   sender: 'user' | 'ai';
   timestamp: Date;
-  isPlaying?: boolean;
 }
 
 export default function ChatInterface() {
@@ -89,7 +87,6 @@ export default function ChatInterface() {
           text: response,
           sender: 'ai',
           timestamp: new Date(),
-          isPlaying: true,
         };
         setMessages((prev) => [...prev, aiMessage]);
         setIsLoading(false);
@@ -101,7 +98,6 @@ export default function ChatInterface() {
         text: "FUCK NO!!! And I'm having a digital breakdown right now. Try again when I'm less pissed off!",
         sender: 'ai',
         timestamp: new Date(),
-        isPlaying: true,
       };
       setMessages((prev) => [...prev, errorMessage]);
       setIsLoading(false);
@@ -129,21 +125,7 @@ export default function ChatInterface() {
                     : 'bg-apple-gray text-black rounded-bl-md'
                 }`}
               >
-                <div className="flex items-center space-x-2">
-                  <div className="flex-1">{message.text}</div>
-                  {message.sender === 'ai' && message.isPlaying && (
-                    <VoiceMessage
-                      text={message.text}
-                      onPlayComplete={() => {
-                        setMessages(prev =>
-                          prev.map(msg =>
-                            msg.id === message.id ? { ...msg, isPlaying: false } : msg
-                          )
-                        );
-                      }}
-                    />
-                  )}
-                </div>
+                <div>{message.text}</div>
                 <div className={`text-xs mt-1 ${message.sender === 'user' ? 'text-blue-100' : 'text-gray-500'}`}>
                   {formatTime(message.timestamp)}
                 </div>
